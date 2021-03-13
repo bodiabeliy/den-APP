@@ -1,51 +1,52 @@
 <template>
  <div class="vWrapper">
-  <p class="date">{{product_data.day}}</p>
-  <div @click="showDetalies" class="v-list-item">
-    <img class="avatar" :src=" require('../assets/images/' + product_data.avatar) " alt="img">
-    <div class="flex">
-      <p class="name small">{{product_data.name}}</p>
-    <p class="rounded">{{product_data.time}}</p>
+  <div class="v-list-item">
+    <img class="avatar" :src=" require('../assets/images/' + person_data.avatar) " alt="img">
+    <div @click="showDetalies" class="flex">
+      <p class="name small">{{person_data.name}}</p>
+       <i @click="Add" class="fas fa-heart icon-disable" style="font-size: 5.5px;"></i>
     </div>
+      <i @click="Delete" class="fas fa-user-times" style="font-size: 7px;margin-right:20px"></i>
   </div>
-  <Detalize v-if="visible" @Closing="ClosingDetal">
-    <p class="name">{{product_data.name}}</p>
-    <p class="phone ">{{product_data.phone}}<button class="around-1"><i class="fas fa-mobile-alt" style="font-size: 7px; padding-bottom: 3px; color: black;"></i></button> </p>
-    <img class="popup" :src=" require('../assets/images/' + product_data.avatar) " alt="img">
-    <button type="button" class="btn btn-outline-primary">patient anatomy<i class="fas fa-tooth" style="font-size:7.5px; padding-left: 10px;padding-bottom: 2px;" ></i></button>
-    <b> <p class="diangosis">{{"Diagnosis: " + product_data.diangosis}}</p></b>
+  <Detalize v-if="visible" @Closing="ClosingDetal" :persons ="person_data.name">
+    <img class="popup" :src=" require('../assets/images/' + person_data.avatar) " alt="img">
     <div class="timeAndEdit">
-      <p class="times" >{{"Time: " + product_data.time}}</p>
+    <p class="phone" style="width: 100%"><i class="fas fa-mobile-alt" style="font-size: 7px; padding-bottom: 3px;padding-right: 10px; color: black; margin-left:10%"></i>{{person_data.phone}}</p>
+      <button class="around-1"></button>
       <span class="material-icons changeColor" @click="OpenEdit">
         border_color
         </span>
-        <Edit v-if="show" @ClosingEdit="ClosingDetalEdit"></Edit>
     </div>
-    <p class="price">{{"service cost: " + product_data.price +" UAH"}}</p>
   </Detalize>
+  <Alert @RemoveConact="DeleteData" v-if="alertMessage" class="warning">
+  </Alert>
  </div>
 </template>
 
 <script>
 import Detalize from '../components/DetalizeInfo'
-import Edit from '../components/Edit'
+import Alert from '../components/Alert'
 export default {
   props: {
-    product_data: {
+    person_data: {
       type: Object,
       return: { }
     }
   },
   components: {
     Detalize,
-    Edit
+    Alert
   },
   data: () => ({
     visible: false,
     show: true,
-    data: []
+    alertMessage: false,
+    chose: null
   }),
   methods: {
+    Add () {
+      this.$emit('AddConacts', this.person_data)
+    },
     showDetalies () {
       this.visible = true
     },
@@ -62,8 +63,19 @@ export default {
       const color = document.querySelector('.changeColor')
       color.classList.toggle('red')
     },
-    Save () {
-      console.log('Successful!')
+    Delete () {
+      this.alertMessage = true
+    },
+    DeleteData (data) {
+      if (data === true) {
+        console.log('Delete was successful!')
+        setTimeout(() => {
+          this.$emit('DeleteContact')
+        }, 1000)
+      }
+      if (data === false) {
+        alert('Delete was failed!')
+      }
     }
   }
 }
@@ -80,6 +92,7 @@ export default {
     padding: 10px;
     margin-left: 15px;
     margin-bottom: 10px;
+    margin-top: 10px;
   }
 .v-list-item:hover{
   background: rgba(14, 70, 107, 0.144);
@@ -132,5 +145,20 @@ p, .small {
 }
 .red {
   color: red;
+}
+
+.icon-disable {
+  color: #ccc
+}
+.icon-active {
+  color: rgb(214, 33, 72)
+}
+.warning {
+  padding: 10px;
+  margin: 0 auto;
+  width: 400px;
+  height: 200px;
+  background: #ccc;
+  z-index: 3;
 }
 </style>

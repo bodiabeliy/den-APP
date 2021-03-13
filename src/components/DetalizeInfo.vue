@@ -3,7 +3,7 @@
    <span @click="Close" class="material-icons closingButton">
     close
     </span>
-   <h5 class="title">Patient card</h5>
+   <h5 class="title">{{persons}}</h5>
  <slot></slot>
  </div>
 </template>
@@ -13,6 +13,12 @@ export default {
   methods: {
     Close () {
       this.$emit('Closing')
+    }
+  },
+  props: {
+    persons: {
+      type: String,
+      return: ''
     }
   }
 }

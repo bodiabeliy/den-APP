@@ -1,19 +1,36 @@
 <template>
   <div>
-    <div class="header" style="background-color: #007bff; width: 520px; margin-left: 20px;">
-      <h1 class="header" style="color: white; text-align: center">Patients</h1>
+    <div class="header">
+      <h1 class="header" style="color: black; text-align: center">Contact book</h1>
     </div>
     <div class="patient__list">
-      <PatentsList
-        v-for="patient in patients"
-        :key="patient.article"
-        :product_data="patient"
+      <ContactList
+        v-for="(person, index) in CONTACT_LIST"
+        :key="person.id"
+        :person_data="person"
+        @DeleteContact="Deleting(index)"
+        @AddConacts="Add"
       >
-    </PatentsList>
+    </ContactList>
+     <div v-if="CONTACT_LIST.length == 0" class="patient__list">
+      <h4 style="color: #007bff; margin: 0 140px">contact list is empty!</h4>
     </div>
-   <button class="around" @click="Massege">
-    <i class="far fa-plus-circle plus"></i>
-   </button>
+    </div>
+    <router-link :to="{name: 'addContact', params: {person_data: FAVORITE}}">
+      <button class="around">
+        <i class="far fa-plus-circle plus"></i>
+      </button>
+    </router-link>
+     <div v-if="FAVORITE.length !=0" class="favorite">
+       <h2>Favorities: {{ FAVORITE.length}}</h2>
+        <ContactList
+        v-for="person in FAVORITE"
+        :key="person.id"
+         @DeleteContact="FromFavorite(index)"
+        :person_data="person"
+      >
+    </ContactList>
+     </div>
    <div class="warnning">
     <i class="fas fa-bug" style="margin-top:35px; margin-left: 30px; color: white !important;"></i> <span style="font-size: 23px; color: white;">Oops! this option not available!</span>
   </div>
@@ -21,128 +38,62 @@
 </template>
 
 <script>
-import PatentsList from './PatentsList'
+import ContactList from './PatentsList'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
+
 export default {
   components: {
-    PatentsList
-  },
-  methods: {
-    Massege () {
-      const warnning = document.querySelector('.warnning')
-      warnning.style.opacity = 1
-      setTimeout(() => {
-        warnning.style.opacity = 0
-      }, 2000)
-    }
+    ContactList
   },
   data: () => ({
-    patients: [
-      {
-        day: '12 September',
-        name: 'Franky Line',
-        diangosis: 'Deleting',
-        article: 'T1',
-        avatar: 'Franky Line.jpg',
-        time: '14:30',
-        phone: '+38(067)-153-47-86',
-        price: '300'
-      },
-      {
-        day: '12 September',
-        name: 'Sara Kolin',
-        diangosis: 'Deleting',
-        article: 'T2',
-        avatar: 'Sara_Kolin.jpg',
-        time: '15:00',
-        phone: '+38(068)-737-47-16',
-        price: '270'
-      },
-      {
-        day: '12 September',
-        name: 'Roberta Kiosaki',
-        diangosis: 'Deleting',
-        article: 'T3',
-        avatar: 'Roberta Kiosaki.jpg',
-        time: '16:30',
-        phone: '+38(096)-668-11-89',
-        price: '740'
-      },
-      {
-        day: '14 September',
-        name: 'Alex Winter',
-        diangosis: 'Searching',
-        article: 'T4',
-        avatar: 'Alex Winter.jpg',
-        time: '9:10',
-        phone: '+38(067)-103-17-55',
-        price: '120'
-      },
-      {
-        day: '14 September',
-        name: 'Elina Zilly',
-        diangosis: 'Deleting',
-        article: 'T5',
-        avatar: 'Elina_Zilly.jpg',
-        time: '14:30',
-        phone: '+38(050)-253-90-18',
-        price: '400'
-      },
-      {
-        day: '16 September',
-        name: 'Alis Wood',
-        diangosis: 'Deleting',
-        article: 'T6',
-        avatar: 'Alis Wood.jpg',
-        time: '18:50',
-        phone: '+38(067)-153-41-86',
-        price: '900'
-      },
-      {
-        day: '19 September',
-        name: 'Filimon Crazhevsky',
-        diangosis: 'Deleting',
-        article: 'T8',
-        avatar: 'Filimon Crazhevsky.jpg',
-        time: '18:50',
-        phone: '+38(063)-186-47-22',
-        price: '1500'
-      },
-      {
-        day: '19 September',
-        name: 'Maria Om',
-        diangosis: 'Deleting',
-        article: 'T9',
-        avatar: 'Maria Om.jpg',
-        time: '19:20',
-        phone: '+38(066)-153-00-86',
-        price: '650'
-      },
-      {
-        day: '22 September',
-        name: 'Bob Karten',
-        diangosis: 'Deleting',
-        article: 'T10',
-        avatar: 'Bob Karten.jpg',
-        time: '18:50',
-        phone: '+38(067)-163-06-42',
-        price: '1000'
-      }
-    ]
-  })
+  }),
+  methods: {
+    ...mapActions([
+      'DEL',
+      'ADD'
+    ]),
+    ...mapMutations([
+      'CLEAN'
+    ]),
+    Deleting (index) {
+      this.sum++
+      console.log(this.sum)
+      this.DEL(index)
+    },
+    FromFavorite (index) {
+      this.DEL(index)
+      this.FAVORITE.length--
+    },
+    Add (data) {
+      this.ADD(data)
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'CONTACT_LIST',
+      'FAVORITE'
+    ])
+  }
 }
 
 </script>
 
-<style>
+<style >
   @import url('https://fonts.googleapis.com/css2?family=Kanit&display=swap');
+  .header {
+   width: 520px;
+  }
   .header h1{
     font-family: 'Kanit', sans-serif;
     align-items: center;
   }
 .patient__list
 {
+  padding-top:20px;
   display: flex;
   flex-wrap: wrap;
+  height: 400px;
+  overflow: scroll;
   width: 700px;
 }
 .around {
@@ -160,7 +111,7 @@ i {
 }
 .warnning {
   position: absolute;
-   width: 100%;
+   width: 520px;
    height: 90px;
    background: rgb(156, 8, 27);
    opacity: 0;

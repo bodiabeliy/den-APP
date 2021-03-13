@@ -1,19 +1,24 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import PatentsList from '../components/PatentsList'
-import DetalizeInfo from '../components/DetalizeInfo'
-
+import DataList from '../components/DataList'
+import Alert from '../components/Alert'
+import AddContact from '../components/AddNewContact'
 Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'List',
-    component: PatentsList
+    name: 'DataList',
+    component: DataList
   },
   {
-    path: '/DetalizeInfo',
-    name: 'info',
-    component: DetalizeInfo
+    path: '/alert',
+    name: 'alert',
+    component: Alert
+  },
+  {
+    path: '/addContact',
+    name: 'addContact',
+    component: AddContact
   }
 ]
 
